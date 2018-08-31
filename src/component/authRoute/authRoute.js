@@ -17,12 +17,11 @@ class AuthRoute extends React.Component {
         if (publicList.indexOf(pathName) > -1) {
             return null
         }
-        console.log(this.props)
         axios.get('/users/info').then((response) => {
             if (response.status === 200) {
                 if (response.data.code === '0') {
                     this.props.loadData(response.data.result);
-                }else{
+                } else {
                     this.props.history.push('/login');
                 }
             }

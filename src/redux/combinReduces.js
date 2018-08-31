@@ -8,4 +8,6 @@ import { combineReducers } from 'redux'
 
 import {user} from "./user.redux";
 
-export default combineReducers({user});
+import {chatUser} from "./charUser.redux";
+
+export default combineReducers({user,chatUser});

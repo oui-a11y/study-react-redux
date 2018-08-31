@@ -28,15 +28,17 @@ mongoose.connection.on('disconnected', function () {
 
 /* GET users listing. */
 router.get('/list', function (req, res, next) {
-    User.remove({}, function (err, doc) {
-        res.json({
+    const {userId} = req.cookies;
+    if(!userId){
+        return res.json({
             status: '1',
             code: '1',
             msg: 'error',
-            result: doc
-        })
-    });
-    User.find({}, function (err, doc) {
+            result: ''
+        });
+    }
+    const {type} = req.query;
+    User.find({type}, function (err, doc) {
         if (err) {
             res.json({
                 status: '1',
@@ -44,13 +46,14 @@ router.get('/list', function (req, res, next) {
                 msg: 'error',
                 result: ''
             })
+        }else{
+            res.json({
+                status: '0',
+                code: '0',
+                msg: 'success',
+                result: doc
+            })
         }
-        res.json({
-            status: '0',
-            code: '0',
-            msg: 'success',
-            result: doc
-        })
     })
 });
 
@@ -171,6 +174,41 @@ router.get('/info', function (req, res, next) {
             })
         }
     })
+});
+
+router.post('/update',function(req,res,next){
+    const userId = req.cookies.userId;
+    if(!userId){
+        return res.json({
+            status: '1',
+            code: '1',
+            msg: 'error',
+            result: ''
+        })
+    }
+    const reqData = req.body;
+    User.findByIdAndUpdate(userId,reqData,function(err,doc){
+        if(err){
+            res.json({
+                status: '1',
+                code: '1',
+                msg: '未查找到',
+                result: ''
+            });
+        }else{
+            const totalData = Object.assign({},reqData,{
+                user:doc.user,
+                type:doc.type
+            });
+            res.json({
+                status: '0',
+                code: '0',
+                msg: 'success',
+                result: totalData
+            });
+        }
+    })
+
 });
 
 module.exports = router;

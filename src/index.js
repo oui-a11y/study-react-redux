@@ -12,6 +12,10 @@ import './config/axios.config';
 
 import './index.css';
 import registerServiceWorker from './registerServiceWorker';
+import GeniusInfo from "./container/geniusinfo/geniusinfo";
+import BossInfo from "./container/bossinfo/bossinfo";
+import Dashboard from "./component/dashboard/dashboard";
+
 
 const store = createStore(combineReducers, compose(
     applyMiddleware(thunk),
@@ -24,8 +28,13 @@ ReactDOM.render(
         <BrowserRouter>
             <div>
                 <AuthRoute></AuthRoute>
-                <Route path='/login' exact component={Login}></Route>
-                <Route path='/register' exact component={Register}></Route>
+                <Switch>
+                    <Route path='/geniusinfo' component={GeniusInfo}></Route>
+                    <Route path='/bossinfo' component={BossInfo}></Route>
+                    <Route path='/login' exact component={Login}></Route>
+                    <Route path='/register' exact component={Register}></Route>
+                    <Route component={Dashboard}></Route>
+                </Switch>
             </div>
         </BrowserRouter>
 

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {md5Pwd,getRedirectPath} from '../unti/untiFn';
+import {md5Pwd, getRedirectPath} from '../unti/untiFn';
 
 
 const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
@@ -19,9 +19,9 @@ const initState = {
 export function user(state = initState, action) {
     switch (action.type) {
         case REGISTER_SUCCESS:
-            return {...state, msg: '', isAuth: true,redirectTo:getRedirectPath(action.payload), ...action.payload};
+            return {...state, msg: '', isAuth: true, redirectTo: getRedirectPath(action.payload), ...action.payload};
         case LOGIN_SUCCESS:
-            return {...state, msg: '', isAuth: true,redirectTo:getRedirectPath(action.payload), ...action.payload};
+            return {...state, msg: '', isAuth: true, redirectTo: getRedirectPath(action.payload), ...action.payload};
         case ERROR_MSG:
             return {...state, msg: action.msg, isAuth: false};
         case LOAD_DATA:
@@ -58,7 +58,7 @@ export function register({user, pwd, repeatPwd, type}) {
         return errorMsg('密码和确认密码不同');
     }
     return dispatch => {
-        axios.post('/users/register', {user, pwd:md5Pwd(pwd), type}).then((response) => {
+        axios.post('/users/register', {user, pwd: md5Pwd(pwd), type}).then((response) => {
             if (response.status == 200 && response.data.code == '0') {
                 dispatch(registerSuccess({user, type}));
             } else {
@@ -73,11 +73,23 @@ export function login({user, pwd}) {
         return errorMsg('用户密码必须输入');
     }
     return dispatch => {
-        axios.post('/users/login', {user, pwd:md5Pwd(pwd)}).then((response) => {
+        axios.post('/users/login', {user, pwd: md5Pwd(pwd)}).then((response) => {
             if (response.status == 200 && response.data.code == '0') {
                 console.log(response.data);
                 dispatch(loginSuccess(response.data.result));
             } else {
+                dispatch(errorMsg(response.data.msg));
+            }
+        })
+    }
+}
+
+export function update(data) {
+    return dispatch => {
+        axios.post('/users/update', data).then((response) => {
+            if (response.status === 200 && response.data.code === '0') {
+                dispatch(loginSuccess(response.data.result));
+            }else{
                 dispatch(errorMsg(response.data.msg));
             }
         })
