@@ -15,7 +15,7 @@ import registerServiceWorker from './registerServiceWorker';
 import GeniusInfo from "./container/geniusinfo/geniusinfo";
 import BossInfo from "./container/bossinfo/bossinfo";
 import Dashboard from "./component/dashboard/dashboard";
-
+import Chat from "./component/chat/chat";
 
 const store = createStore(combineReducers, compose(
     applyMiddleware(thunk),
@@ -33,6 +33,7 @@ ReactDOM.render(
                     <Route path='/bossinfo' component={BossInfo}></Route>
                     <Route path='/login' exact component={Login}></Route>
                     <Route path='/register' exact component={Register}></Route>
+                    <Route path='/chat/:user' exact component={Chat}></Route>
                     <Route component={Dashboard}></Route>
                 </Switch>
             </div>

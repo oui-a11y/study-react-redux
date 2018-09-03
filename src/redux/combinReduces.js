@@ -10,4 +10,6 @@ import {user} from "./user.redux";
 
 import {chatUser} from "./charUser.redux";
 
-export default combineReducers({user,chatUser});
+import {chat} from "./chat.redux";
+
+export default combineReducers({user,chatUser,chat});

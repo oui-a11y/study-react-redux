@@ -7,6 +7,7 @@ body {
   position: fixed;
   bottom: 0;
   width: 100%;
+  z-index: -1;
 }
 .fixd-header.am-navbar{
   position: fixed;
@@ -15,4 +16,17 @@ body {
 }
 .page-content{
   padding:45px 5px;
+}
+#chat-page .chat-me .am-list-extra{
+  flex-basis: auto;
+}
+#chat-page .chat-me .am-list-content{
+  padding-right: 15px;
+  text-align: right;
+}
+.stick-footer{
+  position: fixed;
+  bottom: 0;
+  width:100%;
+  z-index: 10;
 }

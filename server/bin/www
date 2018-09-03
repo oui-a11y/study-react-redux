@@ -3,7 +3,7 @@
 /**
  * Module dependencies.
  */
-
+var socketio = require('socket.io');
 var app = require('../app');
 var debug = require('debug')('chat-app:server');
 var http = require('http');
@@ -20,6 +20,7 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+app.ready(server); //添加这句
 
 /**
  * Listen on provided port, on all network interfaces.

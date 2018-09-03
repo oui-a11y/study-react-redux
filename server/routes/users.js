@@ -3,6 +3,7 @@ var router = express.Router();
 var mongoose = require('mongoose');
 const model = require('../models/users');
 const User = model.getModel('user');
+const Chat = model.getModel('chat');
 const _filter = {'pwd': 0, '__v': 0};
 
 //连接mogoDB数据库
@@ -29,7 +30,7 @@ mongoose.connection.on('disconnected', function () {
 /* GET users listing. */
 router.get('/list', function (req, res, next) {
     const {userId} = req.cookies;
-    if(!userId){
+    if (!userId) {
         return res.json({
             status: '1',
             code: '1',
@@ -46,7 +47,7 @@ router.get('/list', function (req, res, next) {
                 msg: 'error',
                 result: ''
             })
-        }else{
+        } else {
             res.json({
                 status: '0',
                 code: '0',
@@ -157,7 +158,7 @@ router.get('/info', function (req, res, next) {
             result: ''
         })
     }
-    User.findOne({_id: userId},_filter, function (err, doc) {
+    User.findOne({_id: userId}, _filter, function (err, doc) {
         if (err) {
             res.json({
                 status: '1',
@@ -176,9 +177,9 @@ router.get('/info', function (req, res, next) {
     })
 });
 
-router.post('/update',function(req,res,next){
+router.post('/update', function (req, res, next) {
     const userId = req.cookies.userId;
-    if(!userId){
+    if (!userId) {
         return res.json({
             status: '1',
             code: '1',
@@ -187,18 +188,18 @@ router.post('/update',function(req,res,next){
         })
     }
     const reqData = req.body;
-    User.findByIdAndUpdate(userId,reqData,function(err,doc){
-        if(err){
+    User.findByIdAndUpdate(userId, reqData, function (err, doc) {
+        if (err) {
             res.json({
                 status: '1',
                 code: '1',
                 msg: '未查找到',
                 result: ''
             });
-        }else{
-            const totalData = Object.assign({},reqData,{
-                user:doc.user,
-                type:doc.type
+        } else {
+            const totalData = Object.assign({}, reqData, {
+                user: doc.user,
+                type: doc.type
             });
             res.json({
                 status: '0',
@@ -206,6 +207,37 @@ router.post('/update',function(req,res,next){
                 msg: 'success',
                 result: totalData
             });
+        }
+    })
+
+});
+
+router.get('/getMsgList', function (req, res, next) {
+    const {userId} = req.cookies;
+    if (!userId) {
+        return res.json({
+            status: '1',
+            code: '1',
+            msg: 'error',
+            result: ''
+        })
+    }
+    // {'$or':[{from:user,to:user}]}
+    Chat.find({}, function (err, doc) {
+        if (err) {
+            res.json({
+                status: '1',
+                code: '1',
+                msg: 'error',
+                result: ''
+            })
+        }else{
+            res.json({
+                status: '0',
+                code: '0',
+                msg: 'success',
+                result: doc
+            })
         }
     })
 

@@ -5,6 +5,50 @@ import {List, InputItem, WhiteSpace, Button, WingBlank} from 'antd-mobile';
 import {connect} from 'react-redux';
 import {login} from "../../redux/user.redux";
 
+
+function WrapperHello(Comp) {
+    class WarpComp extends Comp {
+        componentDidMount() {
+            console.log('这是高阶组件新增生命周期')
+        }
+        render(){
+            return　<Comp></Comp>
+        }
+    }
+
+    // class CompHello extends React.Component {
+    //     render() {
+    //         console.log(this.props);
+    //         return (
+    //             <div>
+    //                 <span>这是高阶组件特有的元素</span>
+    //                 <Comp></Comp>
+    //             </div>
+    //         )
+    //     }
+    // }
+
+    return WarpComp
+}
+
+// @WrapperHello
+// class Hello extends React.Component {
+//     constructor(props) {
+//         super(props)
+//         this.state = {
+//             one: 1
+//         }
+//     }
+//
+//     render() {
+//         return <h2>这是hello</h2>
+//     }
+// }
+
+
+// Hello = WrapperHello(Hello);
+
+
 @connect(
     state => state.user,
     {login}
@@ -38,6 +82,7 @@ class Login extends React.Component {
     render() {
         return (
             <div>
+                {/*<Hello></Hello>*/}
                 {this.props.redirectTo ? <Redirect to={this.props.redirectTo}></Redirect> : null}
                 <Logo></Logo>
                 <WingBlank>

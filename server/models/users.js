@@ -16,7 +16,14 @@ const models = {
         'money': {type: String}
 
     },
-    chat: {}
+    chat: {
+        'chatId':{type:String,require:true},
+        'form':{type:String,require:true},
+        'to':{type:String,require:true},
+        'read':{type:Boolean,default:false},
+        'content':{type:String,require:true,default:''},
+        'create_time':{type:Number,default:new Date().getTime()},
+    }
 };
 
 for (let m in models) {
