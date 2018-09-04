@@ -1,23 +1,28 @@
 import React from 'react';
 import {NavBar} from 'antd-mobile';
 import {connect} from 'react-redux';
-import {Switch,Route} from 'react-router-dom';
+import {Switch, Route} from 'react-router-dom';
 import NavLinkBar from './../navLink/navLink';
 import Boss from './../boss/boss';
 import Genius from './../genius/genius';
+import User from './../user/user';
+import Msg from './../message/message';
+import {getMsgList, recvMsg} from "../../redux/chat.redux";
 
-function User() {
-    return <h1>个人中心</h1>
-}
 
-function Msg() {
-    return <h1>消息列表</h1>
-}
 @connect(
-    state=>state
+    state => state,
+    {getMsgList, recvMsg}
 )
 
 class Dashboard extends React.Component {
+    componentDidMount() {
+        if (!this.props.chat.chatMsg.length) {
+            this.props.getMsgList();
+            this.props.recvMsg();
+        }
+    }
+
     render() {
         const pathname = this.props.location.pathname;
         const user = this.props.user;
@@ -55,17 +60,18 @@ class Dashboard extends React.Component {
         ];
         return (
             <div>
-                <NavBar className='fixd-header' mode='dard' onClick={()=>this.proClick}>{navList.find(v=>v.path === pathname).title}</NavBar>
-                <div style={{marginTop:45}}>
+                <NavBar className='fixd-header' mode='dard'
+                        onClick={() => this.proClick}>{navList.find(v => v.path === pathname).title}</NavBar>
+                <div style={{marginTop: 45}}>
                     <Switch>
-                        {navList.map(item =>(
+                        {navList.map(item => (
                             <Route path={item.path} component={item.component} key={item.path}></Route>
                         ))}
 
                     </Switch>
                 </div>
 
-                <NavLinkBar data = {navList}></NavLinkBar>
+                <NavLinkBar data={navList}></NavLinkBar>
             </div>
         )
     }

@@ -18,7 +18,7 @@ const models = {
     },
     chat: {
         'chatId':{type:String,require:true},
-        'form':{type:String,require:true},
+        'from':{type:String,require:true},
         'to':{type:String,require:true},
         'read':{type:Boolean,default:false},
         'content':{type:String,require:true,default:''},

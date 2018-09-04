@@ -222,24 +222,41 @@ router.get('/getMsgList', function (req, res, next) {
             result: ''
         })
     }
-    // {'$or':[{from:user,to:user}]}
-    Chat.find({}, function (err, doc) {
+    User.find({}, function (err, userDoc) {
         if (err) {
-            res.json({
+            return res.json({
                 status: '1',
                 code: '1',
                 msg: 'error',
                 result: ''
             })
-        }else{
-            res.json({
-                status: '0',
-                code: '0',
-                msg: 'success',
-                result: doc
-            })
         }
-    })
+        console.log('userDoc' + userDoc);
+        let users = {};
+        userDoc.forEach(v => {
+            users[v._id] = {name: v.user, avatar: v.avatar};
+        })
+        Chat.find({'$or': [{from: userId}, {to: userId}]}, function (err, doc) {
+            if (err) {
+                res.json({
+                    status: '1',
+                    code: '1',
+                    msg: 'error',
+                    result: ''
+                })
+            } else {
+                res.json({
+                    status: '0',
+                    code: '0',
+                    msg: 'success',
+                    result: doc,
+                    users:users
+                })
+            }
+        })
+    });
+    // {'$or':[{from:user,to:user}]}
+
 
 });
 

@@ -12,15 +12,22 @@ const MSG_READ = 'MSG_READ';
 
 const initState = {
     chatMsg: [],
-    unread: 0
+    unread: 0,
+    users: {}
 };
 
 export function chat(state = initState, action) {
     switch (action.type) {
         case MSG_LIST:
-            return {...state, chatMsg: action.payLoad, unread: action.payLoad.filter(v => !v.read).length};
+            return {
+                ...state,
+                users: action.payLoad.users,
+                chatMsg: action.payLoad.msgs,
+                unread: action.payLoad.msgs.filter(v => !v.read && v.to == action.payLoad.userId).length,
+            };
         case MSG_RECV:
-            return {...state, chatMsg: [...state.chatMsg, action.payLoad], unread: state.unread + 1};
+            const unread = action.payLoad.to == action.userId ? 1 : 0;
+            return {...state, chatMsg: [...state.chatMsg, action.payLoad], unread: state.unread + unread};
         // case MSG_READ:
         //     return
         default:
@@ -28,30 +35,33 @@ export function chat(state = initState, action) {
     }
 }
 
-function msgList(msgs) {
-    return {type: MSG_LIST, payLoad: msgs}
+function msgList(msgs, users,userId) {
+    return {type: MSG_LIST, payLoad: {msgs, users,userId}}
 }
 
-function msgRecv(msg) {
+function msgRecv(msg,userId) {
     return {
-        type: MSG_RECV, payLoad: msg
+        userId,type: MSG_RECV, payLoad: msg
     }
 }
 
 export function recvMsg() {
-    return dispatch => {
+    return (dispatch,getState) => {
         socket.on('recvMsg', function (data) {
             console.log(data);
-            dispatch(msgRecv(data));
+            const userId = getState().user._id;
+            dispatch(msgRecv(data,userId));
         })
     }
 }
 
 export function getMsgList() {
-    return dispatch => {
+    return (dispatch, getState) => {
+        const userId = getState().user._id;
         axios.get('/users/getMsgList').then((response) => {
             if (response.status == 200 && response.data.code === '0') {
-                dispatch(msgList(response.data.result));
+                console.log(getState());
+                dispatch(msgList(response.data.result, response.data.users,userId));
             }
         })
     }
