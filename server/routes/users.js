@@ -250,7 +250,7 @@ router.get('/getMsgList', function (req, res, next) {
                     code: '0',
                     msg: 'success',
                     result: doc,
-                    users:users
+                    users: users
                 })
             }
         })
@@ -258,6 +258,44 @@ router.get('/getMsgList', function (req, res, next) {
     // {'$or':[{from:user,to:user}]}
 
 
+});
+
+router.post('/readMsg', function (req, res, next) {
+    const {userId} = req.cookies;
+    const {from} = req.body;
+    if (!userId) {
+        return res.json({
+            status: '1',
+            code: '1',
+            msg: 'error',
+            result: ''
+        })
+    }
+    Chat.update(
+        {from, to: userId},
+        {'$set': {read: true}},
+        {'multi': true},
+        function (err, doc) {
+            if (err) {
+                return res.json({
+                        status: '1',
+                        code: '1',
+                        msg: 'error',
+                        result: ''
+                    }
+                )
+            } else {
+                res.json({
+                        status: '0',
+                        code: '0',
+                        msg: 'success',
+                        result: {
+                            num:doc.nModified
+                        }
+                    }
+                )
+            }
+        })
 });
 
 module.exports = router;

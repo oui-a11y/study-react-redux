@@ -2,7 +2,7 @@ import React from 'react';
 // import io from 'socket.io-client';
 import {List, InputItem, NavBar, Icon, Grid} from 'antd-mobile';
 import {connect} from 'react-redux';
-import {getMsgList, sendMsg, recvMsg} from "../../redux/chat.redux";
+import {getMsgList, sendMsg, recvMsg, readMsg} from "../../redux/chat.redux";
 import {getChatId} from "../../unti/untiFn";
 
 // const socket = io('ws://localhost:9890');
@@ -11,7 +11,7 @@ import {getChatId} from "../../unti/untiFn";
 // });
 @connect(
     state => state,
-    {getMsgList, sendMsg, recvMsg}
+    {getMsgList, sendMsg, recvMsg, readMsg}
 )
 class Chat extends React.Component {
     constructor(props) {
@@ -19,7 +19,7 @@ class Chat extends React.Component {
         this.state = {
             text: '',
             msg: [],
-            showEmoji:false
+            showEmoji: false
         }
     }
 
@@ -29,6 +29,7 @@ class Chat extends React.Component {
             this.props.getMsgList();
             this.props.recvMsg();
         }
+
         this.fixCarousel();
         // socket.on('recvMsg', (data) => {
         //     console.log(data);
@@ -36,6 +37,11 @@ class Chat extends React.Component {
         //         msg: [...this.state.msg, data.text]
         //     })
         // });
+    }
+
+    componentWillUnmount() {
+        const to = this.props.match.params.user;
+        this.props.readMsg(to);
     }
 
     handleSubmit() {
@@ -47,9 +53,10 @@ class Chat extends React.Component {
 
 
         this.props.sendMsg({from, to, msg});
-        this.setState({text: '',showEmoji:false});
+        this.setState({text: '', showEmoji: false});
     }
-    fixCarousel(){
+
+    fixCarousel() {
         setTimeout(function () {
             window.dispatchEvent(new Event('resize'))
         }, 0)
@@ -98,8 +105,8 @@ class Chat extends React.Component {
                             }}
                             extra={
                                 <div>
-                                    <span style={{marginRight:15}} onClick={()=>{
-                                        this.setState({showEmoji:!this.state.showEmoji})
+                                    <span style={{marginRight: 15}} onClick={() => {
+                                        this.setState({showEmoji: !this.state.showEmoji})
                                         this.fixCarousel();
                                     }}>😂</span>
                                     <span onClick={() => this.handleSubmit()}>发送</span>
@@ -114,11 +121,11 @@ class Chat extends React.Component {
                             isCarousel={true}
                             onClick={el => {
                                 this.setState({
-                                    text:this.state.text + el.text
+                                    text: this.state.text + el.text
                                 })
                             }}
                         />
-                    ): null}
+                    ) : null}
                 </div>
             </div>
         )
